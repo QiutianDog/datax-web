@@ -411,6 +411,11 @@ public class JobServiceImpl implements JobService {
         String key = "system_please_choose";
         List<String> rdTables = dto.getReaderTables();
         List<String> wrTables = dto.getWriterTables();
+
+        // 添加默认排序
+        rdTables.sort(Comparator.naturalOrder());
+        wrTables.sort(Comparator.naturalOrder());
+
         if (dto.getReaderDatasourceId() == null) {
             return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString(key) + I18nUtil.getString("jobinfo_field_readerDataSource"));
         }
@@ -426,6 +431,12 @@ public class JobServiceImpl implements JobService {
         List<String> rColumns;
         List<String> wColumns;
         for (int i = 0; i < rdTables.size(); i++) {
+            String rdTableName = rdTables.get(i);
+            String wrTableName = wrTables.get(i);
+            if (Objects.equals(rdTableName, wrTableName)) {
+                return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("json_build_inconsistent_r_w_tables"));
+            }
+
             rColumns = datasourceQueryService.getColumns(dto.getReaderDatasourceId(), rdTables.get(i));
             wColumns = datasourceQueryService.getColumns(dto.getWriterDatasourceId(), wrTables.get(i));
 

@@ -27,14 +27,26 @@ public class QueryToolFactory {
             return getPostgresqlQueryToolInstance(jobDatasource);
         } else if (JdbcConstants.SQL_SERVER.equals(datasource)) {
             return getSqlserverQueryToolInstance(jobDatasource);
-        }else if (JdbcConstants.HIVE.equals(datasource)) {
+        } else if (JdbcConstants.HIVE.equals(datasource)) {
             return getHiveQueryToolInstance(jobDatasource);
         } else if (JdbcConstants.CLICKHOUSE.equals(datasource)) {
             return getClickHouseQueryToolInstance(jobDatasource);
-        }else if (JdbcConstants.HBASE20XSQL.equals(datasource)) {
+        } else if (JdbcConstants.HBASE20XSQL.equals(datasource)) {
             return getHbase20XsqlQueryToolQueryToolInstance(jobDatasource);
+        } else if (JdbcConstants.OCEANBASE.equals(datasource)) {
+            return getOceanBaseQueryToolInstance(jobDatasource);
+
         }
         throw new UnsupportedOperationException("找不到该类型: ".concat(datasource));
+    }
+
+    private static BaseQueryTool getOceanBaseQueryToolInstance(JobDatasource jobDatasource) {
+        try {
+            return new OceanBaseQueryTool(jobDatasource);
+        } catch (SQLException e) {
+            throw RdbmsException.asConnException(JdbcConstants.OCEANBASE,
+                    e, jobDatasource.getJdbcUsername(), jobDatasource.getDatasourceName());
+        }
     }
 
     private static BaseQueryTool getMySQLQueryToolInstance(JobDatasource jdbcDatasource) {
@@ -42,7 +54,7 @@ public class QueryToolFactory {
             return new MySQLQueryTool(jdbcDatasource);
         } catch (Exception e) {
             throw RdbmsException.asConnException(JdbcConstants.MYSQL,
-                    e,jdbcDatasource.getJdbcUsername(),jdbcDatasource.getDatasourceName());
+                    e, jdbcDatasource.getJdbcUsername(), jdbcDatasource.getDatasourceName());
         }
     }
 
@@ -51,7 +63,7 @@ public class QueryToolFactory {
             return new OracleQueryTool(jdbcDatasource);
         } catch (SQLException e) {
             throw RdbmsException.asConnException(JdbcConstants.ORACLE,
-                    e,jdbcDatasource.getJdbcUsername(),jdbcDatasource.getDatasourceName());
+                    e, jdbcDatasource.getJdbcUsername(), jdbcDatasource.getDatasourceName());
         }
     }
 
@@ -60,7 +72,7 @@ public class QueryToolFactory {
             return new PostgresqlQueryTool(jdbcDatasource);
         } catch (SQLException e) {
             throw RdbmsException.asConnException(JdbcConstants.POSTGRESQL,
-                    e,jdbcDatasource.getJdbcUsername(),jdbcDatasource.getDatasourceName());
+                    e, jdbcDatasource.getJdbcUsername(), jdbcDatasource.getDatasourceName());
         }
     }
 
@@ -69,7 +81,7 @@ public class QueryToolFactory {
             return new SqlServerQueryTool(jdbcDatasource);
         } catch (SQLException e) {
             throw RdbmsException.asConnException(JdbcConstants.SQL_SERVER,
-                    e,jdbcDatasource.getJdbcUsername(),jdbcDatasource.getDatasourceName());
+                    e, jdbcDatasource.getJdbcUsername(), jdbcDatasource.getDatasourceName());
         }
     }
 
@@ -78,9 +90,10 @@ public class QueryToolFactory {
             return new HiveQueryTool(jdbcDatasource);
         } catch (SQLException e) {
             throw RdbmsException.asConnException(JdbcConstants.HIVE,
-                    e,jdbcDatasource.getJdbcUsername(),jdbcDatasource.getDatasourceName());
+                    e, jdbcDatasource.getJdbcUsername(), jdbcDatasource.getDatasourceName());
         }
     }
+
     private static BaseQueryTool getClickHouseQueryToolInstance(JobDatasource jdbcDatasource) {
         try {
             return new ClickHouseQueryTool(jdbcDatasource);

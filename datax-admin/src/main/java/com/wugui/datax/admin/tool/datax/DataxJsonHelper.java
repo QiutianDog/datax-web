@@ -6,10 +6,32 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.wugui.datatx.core.util.Constants;
-import com.wugui.datax.admin.dto.*;
+import com.wugui.datax.admin.dto.DataXJsonBuildDto;
+import com.wugui.datax.admin.dto.HbaseReaderDto;
+import com.wugui.datax.admin.dto.HbaseWriterDto;
+import com.wugui.datax.admin.dto.HiveReaderDto;
+import com.wugui.datax.admin.dto.HiveWriterDto;
+import com.wugui.datax.admin.dto.MongoDBReaderDto;
+import com.wugui.datax.admin.dto.MongoDBWriterDto;
+import com.wugui.datax.admin.dto.RdbmsReaderDto;
+import com.wugui.datax.admin.dto.RdbmsWriterDto;
 import com.wugui.datax.admin.entity.JobDatasource;
-import com.wugui.datax.admin.tool.datax.reader.*;
-import com.wugui.datax.admin.tool.datax.writer.*;
+import com.wugui.datax.admin.tool.datax.reader.ClickHouseReader;
+import com.wugui.datax.admin.tool.datax.reader.HBaseReader;
+import com.wugui.datax.admin.tool.datax.reader.HiveReader;
+import com.wugui.datax.admin.tool.datax.reader.MongoDBReader;
+import com.wugui.datax.admin.tool.datax.reader.MysqlReader;
+import com.wugui.datax.admin.tool.datax.reader.OracleReader;
+import com.wugui.datax.admin.tool.datax.reader.PostgresqlReader;
+import com.wugui.datax.admin.tool.datax.reader.SqlServerReader;
+import com.wugui.datax.admin.tool.datax.writer.ClickHouseWriter;
+import com.wugui.datax.admin.tool.datax.writer.HBaseWriter;
+import com.wugui.datax.admin.tool.datax.writer.HiveWriter;
+import com.wugui.datax.admin.tool.datax.writer.MongoDBWriter;
+import com.wugui.datax.admin.tool.datax.writer.MysqlWriter;
+import com.wugui.datax.admin.tool.datax.writer.OraclelWriter;
+import com.wugui.datax.admin.tool.datax.writer.PostgresqllWriter;
+import com.wugui.datax.admin.tool.datax.writer.SqlServerlWriter;
 import com.wugui.datax.admin.tool.pojo.DataxHbasePojo;
 import com.wugui.datax.admin.tool.pojo.DataxHivePojo;
 import com.wugui.datax.admin.tool.pojo.DataxMongoDBPojo;
@@ -23,7 +45,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.wugui.datax.admin.util.JdbcConstants.*;
+import static com.wugui.datax.admin.util.JdbcConstants.CLICKHOUSE;
+import static com.wugui.datax.admin.util.JdbcConstants.HBASE;
+import static com.wugui.datax.admin.util.JdbcConstants.HIVE;
+import static com.wugui.datax.admin.util.JdbcConstants.MONGODB;
+import static com.wugui.datax.admin.util.JdbcConstants.MYSQL;
+import static com.wugui.datax.admin.util.JdbcConstants.ORACLE;
+import static com.wugui.datax.admin.util.JdbcConstants.POSTGRESQL;
+import static com.wugui.datax.admin.util.JdbcConstants.SQL_SERVER;
+import static com.wugui.datax.admin.util.JdbcConstants.OCEANBASE;
 
 /**
  * 构建 com.wugui.datax json的工具类
@@ -127,6 +157,9 @@ public class DataxJsonHelper implements DataxJsonInterface {
         } else if (MONGODB.equals(datasource)) {
             readerPlugin = new MongoDBReader();
             buildReader = buildMongoDBReader();
+        } else if (OCEANBASE.equals(datasource)) {
+            readerPlugin = new OracleReader();
+            buildReader = buildReader();
         }
     }
 
@@ -165,6 +198,9 @@ public class DataxJsonHelper implements DataxJsonInterface {
         } else if (JdbcConstants.MONGODB.equals(datasource)) {
             writerPlugin = new MongoDBWriter();
             buildWriter = this.buildMongoDBWriter();
+        } else if (OCEANBASE.equals(datasource)) {
+            writerPlugin = new OraclelWriter();
+            buildWriter = this.buildWriter();
         }
     }
 
@@ -199,6 +235,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
                 return String.format("[%s]", column);
             case POSTGRESQL:
             case ORACLE:
+            case OCEANBASE:
                 return String.format("\"%s\"", column);
             default:
                 return column;
@@ -285,7 +322,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
         }
         dataxHbasePojo.setColumns(columns);
         dataxHbasePojo.setReaderHbaseConfig(readerDatasource.getZkAdress());
-        String readerTable=!CollectionUtils.isEmpty(readerTables)?readerTables.get(0):Constants.STRING_BLANK;
+        String readerTable = !CollectionUtils.isEmpty(readerTables) ? readerTables.get(0) : Constants.STRING_BLANK;
         dataxHbasePojo.setReaderTable(readerTable);
         dataxHbasePojo.setReaderMode(hbaseReaderDto.getReaderMode());
         dataxHbasePojo.setReaderRange(hbaseReaderDto.getReaderRange());
@@ -352,7 +389,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
         }
         dataxHbasePojo.setColumns(columns);
         dataxHbasePojo.setWriterHbaseConfig(writerDatasource.getZkAdress());
-        String writerTable=!CollectionUtils.isEmpty(writerTables)?writerTables.get(0):Constants.STRING_BLANK;
+        String writerTable = !CollectionUtils.isEmpty(writerTables) ? writerTables.get(0) : Constants.STRING_BLANK;
         dataxHbasePojo.setWriterTable(writerTable);
         dataxHbasePojo.setWriterVersionColumn(hbaseWriterDto.getWriterVersionColumn());
         dataxHbasePojo.setWriterRowkeyColumn(hbaseWriterDto.getWriterRowkeyColumn());

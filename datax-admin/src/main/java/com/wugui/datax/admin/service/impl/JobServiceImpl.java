@@ -433,7 +433,7 @@ public class JobServiceImpl implements JobService {
         for (int i = 0; i < rdTables.size(); i++) {
             String rdTableName = rdTables.get(i);
             String wrTableName = wrTables.get(i);
-            if (Objects.equals(rdTableName, wrTableName)) {
+            if (!Objects.equals(rdTableName, wrTableName)) {
                 return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("json_build_inconsistent_r_w_tables"));
             }
 

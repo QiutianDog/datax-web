@@ -59,7 +59,7 @@ public class OceanBaseDatabaseMeta extends BaseDatabaseMeta implements DatabaseI
 
     @Override
     public String getSQLQueryTables() {
-        return "select table_name from user_tab_comments";
+        return "select table_name from user_tables";
     }
 
 

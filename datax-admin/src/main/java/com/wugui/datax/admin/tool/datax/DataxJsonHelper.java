@@ -21,6 +21,7 @@ import com.wugui.datax.admin.tool.datax.reader.HBaseReader;
 import com.wugui.datax.admin.tool.datax.reader.HiveReader;
 import com.wugui.datax.admin.tool.datax.reader.MongoDBReader;
 import com.wugui.datax.admin.tool.datax.reader.MysqlReader;
+import com.wugui.datax.admin.tool.datax.reader.OceanBaseReader;
 import com.wugui.datax.admin.tool.datax.reader.OracleReader;
 import com.wugui.datax.admin.tool.datax.reader.PostgresqlReader;
 import com.wugui.datax.admin.tool.datax.reader.SqlServerReader;
@@ -159,7 +160,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
             readerPlugin = new MongoDBReader();
             buildReader = buildMongoDBReader();
         } else if (OCEANBASE.equals(datasource)) {
-            readerPlugin = new OracleReader();
+            readerPlugin = new OceanBaseReader();
             buildReader = buildReader();
         }
     }

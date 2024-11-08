@@ -29,6 +29,7 @@ import com.wugui.datax.admin.tool.datax.writer.HBaseWriter;
 import com.wugui.datax.admin.tool.datax.writer.HiveWriter;
 import com.wugui.datax.admin.tool.datax.writer.MongoDBWriter;
 import com.wugui.datax.admin.tool.datax.writer.MysqlWriter;
+import com.wugui.datax.admin.tool.datax.writer.OceanBaseWriter;
 import com.wugui.datax.admin.tool.datax.writer.OraclelWriter;
 import com.wugui.datax.admin.tool.datax.writer.PostgresqllWriter;
 import com.wugui.datax.admin.tool.datax.writer.SqlServerlWriter;
@@ -199,7 +200,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
             writerPlugin = new MongoDBWriter();
             buildWriter = this.buildMongoDBWriter();
         } else if (OCEANBASE.equals(datasource)) {
-            writerPlugin = new OraclelWriter();
+            writerPlugin = new OceanBaseWriter();
             buildWriter = this.buildWriter();
         }
     }
